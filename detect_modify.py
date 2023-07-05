@@ -257,12 +257,19 @@ def run(
         raw_type=None, # 0 means FITS, 1 means npy
         ##########################################
         yoda_weights='./best_weights/FE_stacked_convns_s_3.pt',
+        out_filter='Linear',
 ):
     ##################################################################################################
     """ 
         After load full npy files, we need to separate parts of them to 1024 x 1024 pixels.
         Then we will loop through all the parts and do the inference.
     """
+    filter_list = ['Linear', 'Log', 'Power', 'Sqrt', 'Squared', 'ASINH', 'SINH']
+    if (out_filter in filter_list):
+        out_filter_idx = filter_list.index(out_filter)
+    else:
+        assert False, f'Cant find filter: {out_filter}'
+    
     npy_path = str(source)
     # get all the npy files
     if raw_type == 0:
@@ -386,7 +393,7 @@ def run(
                 img_i_path = os.path.join(temp_sub_processed, export_path)
 
                 # save sub .npy that is processed by YoDa
-                np.save(img_i_path, stacked_im[:, 0:1, :, :].detach().cpu().numpy())
+                np.save(img_i_path, stacked_im[:, out_filter_idx:out_filter_idx+1, :, :].detach().cpu().numpy())
 
                 # save only first channel of im.detach().cpu().numpy()
                 # np.save(img_i_path, im[0, 1, :, :].detach().cpu().numpy())
@@ -568,7 +575,7 @@ def parse_opt():
     parser.add_argument('--vid-stride', type=int, default=1, help='video frame-rate stride')
 
     parser.add_argument('--yoda_weights', type=str, default='./best_weights/FE_stacked_convns_s_3.pt', help='yoda model path or triton URL')
-    
+    parser.add_argument('--out_filter', type=str, default='Linear', help='Output filter of detection') 
     opt = parser.parse_args()
     opt.imgsz *= 2 if len(opt.imgsz) == 1 else 1  # expand
     print_args(vars(opt))
