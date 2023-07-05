@@ -7,7 +7,7 @@ conf_thres = 0.25
 iou_thres = 0.45
 
 # Full image output filter
-out_filter = 'ASINH'
+out_filter = 'Linear'
 
 weight_ = "./yoda/weights/yolo_best_s.pt"
 yoda_weight = './yoda/weights/FE_stacked_convns_s_3.pt'
