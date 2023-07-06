@@ -334,7 +334,10 @@ def run(
         yoda = YODA(channels=7, kernels=(1, 3))
         yoda.load_state_dict(torch.load(yoda_weights))
         yoda.float()
-        yoda.cpu()
+        try: 
+            yoda.to(device)
+        except:
+            yoda.cpu()
         yoda.eval() # Need to be eval to make output consistent (make sure disable BN)
 
         # Dataloader
