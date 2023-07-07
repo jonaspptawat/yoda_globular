@@ -254,36 +254,14 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
     # Start training
     
     #########################################
-    # Select Feature Extractor
-    if fe_models == 'FE_Add':
-        # Best -> augment-size-n-5_3
-        yoda = FE_Add(channels=7, kernels=(3, 5))
-        yoda.load_state_dict(torch.load('./feature_extractor_models/weights/FE_stacked_add_n_5_3.pt'))
-        
-    elif fe_models == 'FE_AddNS':
-        # Best -> augment-size-s-3
-        yoda = FE_AddNS(channels=7, kernels=(1, 3,))
-        yoda.load_state_dict(torch.load('./feature_extractor_models/weights/FE_stacked_addns_s_3.pt'))
-        
-    elif fe_models == 'FE_Conv':
-        # Best -> augment-size-n-5_3
-        yoda = FE_Conv(channels=7, kernels=(3, 5))
-        yoda.load_state_dict(torch.load('./feature_extractor_models/weights/FE_stacked_conv_n_5_3.pt'))
-        
-    elif fe_models == 'FE_ConvNS':
+    if fe_models == 'FE_ConvNS':
         # Best -> augment-size-s-3
         yoda = FE_ConvNS(channels=7, kernels=(1, 3))
         yoda.load_state_dict(torch.load('./feature_extractor_models/weights/FE_stacked_convns_s_3.pt'))
         
-    elif fe_models == 'FE_OneR':
-        # Best -> augment-size-m-3
-        yoda = FE_OneR(channels=7, kernels=(3,))
-        yoda.load_state_dict(torch.load('./feature_extractor_models/weights/FE_oner_m_3.pt'))
-        
     else:
         print('Feature Extractor not found!')
         raise
-    
     yoda = yoda.to(device)
     yoda.eval()
     yoda.float()
